@@ -1,0 +1,94 @@
+package romano;
+import java.util.*;
+public class romano_562606 {
+	public static void main(String [] args) {
+		
+		Scanner s = new Scanner (System.in); 
+		
+		int numfloors = 7;
+		int numrooms = 5;
+		
+		int hotel [][] = new int[numfloors][numrooms];
+		
+		int choice = 0;
+		
+		do {
+			System.out.println("=== HOTEL RESERVATION SYSTEM === \n[1] View Rooms \n"
+				+ "[2] Check In \n[3] Check  ExitOut \n[4] Exit ");
+		
+			System.out.print("Enter choice: ");
+			choice = s.nextInt();
+			System.out.println("");
+			switch (choice) {
+			
+			case 1:
+				
+				for (int a = hotel.length - 1; a >= 0; a--) {
+					System.out.print("Floor " + (a+1)  + ": ");
+					for (int b = 0; b < hotel[a].length; b++) {
+						System.out.print("[" + hotel[a][b] + "]" );
+					}
+					System.out.println();
+				}
+				System.out.println("");
+				break;
+			
+			case 2:
+				
+				System.out.print("Enter floor (1-7): " );
+				int choicefloor = s.nextInt ();
+				
+				System.out.print("Enter room (1-7): " );
+				int choiceroom = s.nextInt ();
+				
+				int row = choicefloor - 1;
+				int column = choiceroom - 1;
+				
+				if (hotel[row][column] == 0) {
+					hotel [row] [column] = 1;
+					
+					System.out.println(""
+							+ "Check in Succesful" );
+
+				}
+				
+				System.out.println("");
+				break;		 
+			
+				
+			case 3:
+				System.out.print("Enter floor (1-7): " );
+				int checkoutfloor = s.nextInt ();
+				
+				System.out.print("Enter room (1-7): " );
+				int checkoutroom = s.nextInt ();
+				
+				int checkoutRow = checkoutfloor - 1;
+				int checkoutColumn = checkoutroom - 1; 
+				
+				if (hotel[checkoutRow][checkoutColumn] == 1) {
+					hotel [checkoutRow] [checkoutColumn] = 0;
+					
+					System.out.println("Checkout Succesfully!" );
+				} else {
+					System.out.println("Room already empty!" );
+				}
+				
+				System.out.println("");
+				break;
+				
+			case 4: 
+				System.out.println("Exiting Pragram... Thank you!");
+				break;
+				default:
+					System.out.println("Invalid Choice" );
+
+			}
+				
+			
+		}while (choice != 4);
+		
+			s.close();	
+	}
+	
+}
