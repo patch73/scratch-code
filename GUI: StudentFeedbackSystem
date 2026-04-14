@@ -1,0 +1,93 @@
+package myPackage;
+import javax.swing.*;
+import java.io.*;
+public class romano_StudentFeedbackSystemGUI {
+	public static void main(String[] args) {
+		
+		
+		int totalFeedbacks = 0;
+		int totalRating = 0;
+		double aveRating = 0;
+		double PreAverageRate = 0;
+		String category = "";
+		int rate1 = 0;
+		int rate2 = 0;
+		int rate3 = 0;
+		int rate4 = 0;
+		int rate5 = 0;
+		String FeedCategory = "";
+		
+		try {
+			
+			FileWriter f = new FileWriter ("feedback.txt", true);
+			
+			f.write("\n--- Student Feedback Records ---\n");
+			
+			while (true) {
+				totalFeedbacks++;
+				String name = JOptionPane.showInputDialog(null, "Student Name: ", "--- Student Feedback Records ---",  JOptionPane.QUESTION_MESSAGE);
+				String course = JOptionPane.showInputDialog(null, "Course: ",   "--- Student Feedback Records ---", JOptionPane.QUESTION_MESSAGE);
+				String feedback = JOptionPane.showInputDialog(null, "Feedback: ",  "--- Student Feedback Records ---", JOptionPane.QUESTION_MESSAGE);
+				int rating = Integer.parseInt(JOptionPane.showInputDialog(null, "Rating (1-5): ",  "--- Student Feedback Records ---", JOptionPane.QUESTION_MESSAGE));
+				
+				totalRating += rating;
+				
+				PreAverageRate = (double) totalRating / totalFeedbacks;
+				
+				aveRating = Math.floor(PreAverageRate * 10) / 10.0; 
+				
+				
+				if (rating == 1) {
+					category = " (Very Poor)";
+					rate1++;
+				} else if (rating == 2) {
+					category = " (Poor)";
+					rate2++;
+				} else if (rating == 3) {
+					category = " (Average)";
+					rate3++;
+				} else if (rating == 4) {
+					category = " (Good)";
+					rate4++;
+				} else if (rating == 5) {
+					category = " (Excellent)";
+					rate5++;
+				}
+				
+				if (aveRating < 2.5) {
+					FeedCategory = " (Needs Improvement)";
+				} else if (aveRating >= 2.5 && aveRating <= 3.4) {
+					FeedCategory = " (Average Feedback)";
+				} else if (aveRating >= 3.5 && aveRating <=4.4) {
+					FeedCategory = " (Good Feedback)";
+				} else if (aveRating >= 4.5 && aveRating <= 5.0) {
+					FeedCategory = " (Outstanding Feedback)";
+				}
+				
+				f.write("\nStudent Name: " + name);
+				f.write("\nCourse: " + course);
+				f.write("\nFeedback: " + feedback);
+				f.write("\nRating: " + rating + category + "\n");
+				
+				int moreFeedbacks = JOptionPane.showConfirmDialog(null, "Do you want to enter another feedback?", "Continue?", JOptionPane.YES_NO_OPTION);
+				
+				if (moreFeedbacks  == JOptionPane.NO_OPTION) break;	
+		
+			}
+			
+			 f.write("\n--------------------------");
+				f.write("\nTotal Feedbacks: " + totalFeedbacks);
+				f.write("\nAverage Rating: " + aveRating + FeedCategory +"\n");
+				f.write("\nRating Summary: ");
+				f.write("\nExcellent: " + rate5);
+				f.write("\nGood: " + rate4);
+				f.write("\nAverage: " + rate3);
+				f.write("\nPoor: " + rate2);
+				f.write("\nVery Poor: " + rate1);
+				f.write("\n--------------------------");
+				f.close();
+				
+		} catch (IOException e) {}
+	}
+
+}
