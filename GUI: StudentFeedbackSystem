@@ -16,6 +16,8 @@ public class romano_StudentFeedbackSystemGUI {
 		int rate4 = 0;
 		int rate5 = 0;
 		String FeedCategory = "";
+		String summary = "";
+		String summary2 = "";
 		
 		try {
 			
@@ -64,6 +66,9 @@ public class romano_StudentFeedbackSystemGUI {
 					FeedCategory = " (Outstanding Feedback)";
 				}
 				
+				summary += "\nStudent Name: " + name + "\nCourse: " + course
+						+ "\nFeedback: " + feedback + "\nRating: " + rating + category + "\n";
+				
 				f.write("\nStudent Name: " + name);
 				f.write("\nCourse: " + course);
 				f.write("\nFeedback: " + feedback);
@@ -74,8 +79,14 @@ public class romano_StudentFeedbackSystemGUI {
 				if (moreFeedbacks  == JOptionPane.NO_OPTION) break;	
 		
 			}
-			
-			 f.write("\n--------------------------");
+			 
+				summary2 = "\n--------------------------" + "\nTotal Feedbacks: " + totalFeedbacks + "\nAverage Rating: " + aveRating + FeedCategory + "\n" + 
+						"\nRating Summary: " + "\nExcellent: " + rate5 + "\nGood: " + rate4 + "\nAverage: " + rate3 + "\nPoor: " + rate2 
+						+ "\nVery Poor: " + rate1 + "\n--------------------------";
+				
+				JOptionPane.showMessageDialog(null, summary + summary2, "--- Student Feedback Records ---", JOptionPane.PLAIN_MESSAGE);
+				
+				f.write("\n--------------------------");
 				f.write("\nTotal Feedbacks: " + totalFeedbacks);
 				f.write("\nAverage Rating: " + aveRating + FeedCategory +"\n");
 				f.write("\nRating Summary: ");
