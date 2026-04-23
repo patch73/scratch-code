@@ -1,0 +1,105 @@
+package mypackage;
+import javax.swing.*;
+import java.awt.event.*;
+import java.io.FileWriter; // For file writing
+import java.io.IOException;
+
+public class guiFirstLabExam extends JFrame implements ActionListener {
+    static JLabel lblTitle, lblRecNum, lblStoreNam, lblTotCos, lblTax, lblFinalAm;
+    static JTextField txtRecNum, txtStoreNam, txtTotCos, txtTax, txtFinalAm;
+    static JButton btnRecord, btnClear;
+
+    guiFirstLabExam() {
+        setLayout(null);
+        setSize(400, 400);
+        setTitle("Expense Tracker");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        lblTitle = new JLabel("Expense Tracker");
+        lblTitle.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 16));
+        add(lblTitle).setBounds(130, 20, 150, 30);
+
+        lblRecNum = new JLabel("Receipt Number:");
+        add(lblRecNum).setBounds(30, 60, 120, 30);
+        txtRecNum = new JTextField();
+        add(txtRecNum).setBounds(150, 60, 200, 25);
+
+        lblStoreNam = new JLabel("Store Name:");
+        add(lblStoreNam).setBounds(30, 95, 120, 30);
+        txtStoreNam = new JTextField();
+        add(txtStoreNam).setBounds(150, 95, 200, 25);
+
+        lblTotCos = new JLabel("Total Cost:");
+        add(lblTotCos).setBounds(30, 130, 120, 30);
+        txtTotCos = new JTextField();
+        add(txtTotCos).setBounds(150, 130, 200, 25);
+
+        lblTax = new JLabel("Tax (12%):");
+        add(lblTax).setBounds(30, 190, 120, 30);
+        txtTax = new JTextField();
+        txtTax.setEditable(false);
+        add(txtTax).setBounds(150, 190, 200, 25);
+
+        lblFinalAm = new JLabel("Final Amount:");
+        add(lblFinalAm).setBounds(30, 225, 120, 30);
+        txtFinalAm = new JTextField();
+        txtFinalAm.setEditable(false);
+        add(txtFinalAm).setBounds(150, 225, 200, 25);
+        
+        btnRecord = new JButton("Record");
+        add(btnRecord).setBounds(80, 280, 100, 30);
+        btnRecord.addActionListener(this);
+
+        btnClear = new JButton("Clear");
+        add(btnClear).setBounds(200, 280, 100, 30);
+        btnClear.addActionListener(this);
+
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+    	 if (e.getSource() == btnRecord) {
+    	        try {
+    	            // Perform calculations
+    	            double cost = Double.parseDouble(txtTotCos.getText());
+    	            double tax = cost * 0.12;
+    	            double total = cost + tax;
+
+    	            txtTax.setText(String.format("%.2f", tax));
+    	            txtFinalAm.setText(String.format("%.2f", total));
+
+    	            // Save to file (Append mode) using the required format
+    	            try (FileWriter writer = new FileWriter("data.txt", true)) {
+    	                // Matches the order: Receipt Number, Store Name, Total Cost, Tax, and Final Amount
+    	                String data = String.format("Receipt Number: %s | Store Name: %s | Total Cost: %.2f | Tax: %.2f | Final Amount: %.2f\n", 
+    	                                txtRecNum.getText(), 
+    	                                txtStoreNam.getText(), 
+    	                                cost, 
+    	                                tax, 
+    	                                total);
+    	                writer.write(data);
+    	                JOptionPane.showMessageDialog(this, "Record saved successfully!");
+    	            } 
+
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid cost entered!");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "File error: " + ex.getMessage());
+            }
+        } else if (e.getSource() == btnClear) {
+            txtRecNum.setText("");
+            txtStoreNam.setText("");
+            txtTotCos.setText("");
+            txtTax.setText("");
+            txtFinalAm.setText("");
+        }
+	}
+	
+	
+	
+	public static void main(String[] args) {
+		new guiFirstLabExam ();
+	}
+}
