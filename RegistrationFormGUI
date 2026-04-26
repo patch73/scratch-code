@@ -1,0 +1,106 @@
+package MY;
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+public class registrationGUI extends JFrame {
+	JLabel lbltitle, lblname, lblemail, lblcrePass, lblconPass, lblcountry, lblstate, lblphone;
+	JTextField 	txtname, txtemail, txtcrePass, txtconPass, txtcountry, txtstate, txtphone;
+	JButton btnsubmit, btnclear, btnview;
+	
+	registrationGUI () {
+		setLayout(null);
+		setSize(600,500);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setTitle("Registration Form in Java");
+		
+		lbltitle = new JLabel ("Registration Form in Windows Form:");
+		lbltitle.setFont(new Font("Times New Roman",Font.BOLD, 18));
+		lbltitle.setForeground(Color.BLUE);
+		add(lbltitle).setBounds(80, 20, 300, 30);
+		
+		lblname = new JLabel("Name:");
+		add(lblname).setBounds(60, 60, 120, 30);
+		txtname = new JTextField();
+		add(txtname).setBounds(250, 60, 200, 30);
+		
+		lblemail = new JLabel("Email-ID:");
+		add(lblemail).setBounds(60, 100, 120, 30);
+		txtemail = new JTextField();
+		add(txtemail).setBounds(250, 100, 200, 30);
+		
+		lblcrePass = new JLabel("Create Password:");
+		add(lblcrePass).setBounds(60, 140, 120, 30);
+		txtcrePass = new JTextField();
+		add(txtcrePass).setBounds(250, 140, 200, 30);
+		
+		lblconPass = new JLabel("Confirm Password:");
+		add(lblconPass).setBounds(60, 180, 120, 30);
+		txtconPass = new JTextField();
+		add(txtconPass).setBounds(250, 180, 200, 30);
+		
+		lblcountry = new JLabel("Country:");
+		add(lblcountry).setBounds(60, 220, 120, 30);
+		txtcountry = new JTextField();
+		add(txtcountry).setBounds(250, 220, 200, 30);
+		
+		lblstate = new JLabel("State:");
+		add(lblstate).setBounds(60, 260, 120, 30);
+		txtstate = new JTextField();
+		add(txtstate).setBounds(250, 260, 200, 30);
+		
+		lblphone = new JLabel("Phone No:");
+		add(lblphone).setBounds(60, 300, 120, 30);
+		txtphone = new JTextField();
+		add(txtphone).setBounds(250, 300, 200, 30);
+		
+		btnsubmit = new JButton ("Submit");
+		add(btnsubmit).setBounds(60, 350, 100, 30);
+		
+		btnclear = new JButton ("Clear");
+		add(btnclear).setBounds(250, 350, 100, 30);
+		
+		
+		
+		btnsubmit.addActionListener(e-> {
+			
+			try {
+				FileWriter f = new FileWriter ("info.txt", true);
+				
+				String name = txtname.getText();
+				String email = txtemail.getText();
+				String country = txtcountry.getText();
+				String state = txtstate.getText();
+				String phone = txtphone.getText();
+				
+				f.write("Name: " + name + "\n");
+				f.write("Email-ID: " + email + "\n");
+				f.write("Country: " + country + "\n");
+				f.write("State: " + state + "\n");
+				f.write("Phone No: " + phone + "\n");
+				f.close();
+				
+				JOptionPane.showMessageDialog(null, "Submitted Successfully!"); 
+				
+			} catch (IOException x) {}
+		});
+		
+		btnclear.addActionListener(e-> {
+			txtname.setText("");
+			txtemail.setText("");
+			txtcrePass.setText(""); 
+			txtconPass.setText("");
+			txtcountry.setText("");
+			txtstate.setText("");
+			txtphone.setText("");
+		});
+
+		setVisible(true);
+	
+	}
+	
+	
+	public static void main (String[] args) {
+		new registrationGUI ();
+	}
+
+}
