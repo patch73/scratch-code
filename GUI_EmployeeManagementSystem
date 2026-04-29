@@ -1,0 +1,180 @@
+package labActs;
+import java.awt.Font;
+import java.io.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;;
+
+public class EmployeeManagementSystemGUI extends JFrame{
+	static JLabel lblEMS, lblEmID, lblName, lblBirth, lblAge, lblCivilStat, lblNationality, lblGender, 
+	lblContact, lblEmail, lblDep, lblJob;
+	static JTextField txtEmID, txtName, txtBirth, txtAge, txtNationality, txtContact, txtEmail, txtDep, txtJob;
+	static JButton btnAddEmployee, btnClear;
+	static JComboBox<String> CivilStatBox;
+	static JRadioButton rbMale, rbFemale;
+	static DefaultTableModel model;
+	
+	EmployeeManagementSystemGUI() {
+		setLayout(null);
+		setSize(885,530);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setTitle("Employee Management System");
+		setResizable(false);
+		
+		//first column
+		lblEMS = new JLabel ("EMS Inc.");
+		lblEMS.setFont(new Font("Verdana", Font.PLAIN, 12));
+		add(lblEMS).setBounds(30, 30, 100, 30);
+		
+		lblEmID = new JLabel ("Employee ID");
+		add(lblEmID).setBounds(30, 70, 100, 30);
+		txtEmID = new JTextField ();
+		add(txtEmID).setBounds(30, 97, 180, 20);
+		
+		lblName = new JLabel ("Fullname");
+		add(lblName).setBounds(30, 115, 100, 30);
+		txtName = new JTextField ();
+		add(txtName).setBounds(30, 142, 180, 20);
+		
+		lblBirth = new JLabel ("Date of Birth");
+		add(lblBirth).setBounds(30, 160, 100, 30);
+		txtBirth = new JTextField ();
+		add(txtBirth).setBounds(30, 187, 180, 20);
+		
+		
+		//second column
+		lblAge = new JLabel ("Age");
+		add(lblAge).setBounds(240, 70, 100, 30);
+		txtAge = new JTextField ();
+		add(txtAge).setBounds(240, 97, 180, 20);
+		
+		lblCivilStat = new JLabel ("Civil Status");
+		add(lblCivilStat).setBounds(240, 115, 100, 30);
+		String[] CivilStat = {"Single", "Married", "Widowed", "Separated", "Divorced"};
+		CivilStatBox = new JComboBox<>(CivilStat);
+		CivilStatBox.setFont(new Font("Arial", Font.PLAIN, 12));
+		CivilStatBox.setBounds(240, 142, 180, 20); 
+		add(CivilStatBox);
+		
+		lblNationality = new JLabel ("Nationality");
+		add(lblNationality).setBounds(240, 160, 100, 30);
+		txtNationality = new JTextField ();
+		add(txtNationality).setBounds(240, 187, 180, 20);
+		
+		
+		//third column
+		lblGender = new JLabel ("Gender");
+		add(lblGender).setBounds(450, 70, 100, 30);
+		rbMale = new JRadioButton("Male");
+		rbFemale = new JRadioButton("Female");
+		ButtonGroup genGroup = new ButtonGroup();
+		genGroup.add(rbMale);
+		genGroup.add(rbFemale);
+		rbMale.setBounds(445, 90, 55, 30);
+		rbFemale.setBounds(505, 90, 90, 30);
+		add(rbMale);
+		add(rbFemale);
+		
+		lblContact = new JLabel ("Contact Number");
+		add(lblContact).setBounds(450, 115, 100, 30);
+		txtContact = new JTextField ();
+		add(txtContact).setBounds(450, 142, 180, 20);
+		
+		lblEmail = new JLabel ("Email");
+		add(lblEmail).setBounds(450, 160, 100, 30);
+		txtEmail = new JTextField ();
+		add(txtEmail).setBounds(450, 187, 180, 20);
+		
+		
+		//fourth column
+		lblDep = new JLabel ("Department");
+		add(lblDep).setBounds(660, 115, 100, 30);
+		txtDep = new JTextField ();
+		add(txtDep).setBounds(660, 142, 180, 20);
+		
+		lblJob = new JLabel ("Job Title / Position");
+		add(lblJob).setBounds(660, 160, 150, 30);
+		txtJob = new JTextField ();
+		add(txtJob).setBounds(660, 187, 180, 20);
+		
+		
+		//add button 
+		btnAddEmployee = new JButton ("Add Employee");
+		add(btnAddEmployee).setBounds(680, 220, 140, 20);
+		
+		btnAddEmployee.addActionListener(e-> {
+			add();
+			read();
+		});
+		
+		
+		//table
+        String [] columns = {"Employee ID", "Fullname", "Birth", "Age", "Civil Status", 
+        		"Nationality", "Gender", "Contact", "Email", "Department", "Job Title"};        
+        model = new DefaultTableModel(columns,0);
+		JTable table = new JTable (model);
+        JScrollPane sp = new JScrollPane(table);
+        add(sp).setBounds(30, 255, 815, 200);
+        read();
+		setVisible(true);
+	
+		
+	}
+	public static void add() {
+		try {		
+			JOptionPane.showMessageDialog(null, "Employee successfully added!");
+
+			FileWriter f = new FileWriter ("employees.txt", true);
+			
+			String selectedGender = "";
+
+			if (rbMale.isSelected()) {
+			    selectedGender = "Male";
+			} else if (rbFemale.isSelected()) {
+			    selectedGender = "Female";
+			}   
+			
+			String selectedStatus = (String) CivilStatBox.getSelectedItem();
+			
+			String data = txtEmID.getText() + "#" + txtName.getText() + "#" + txtBirth.getText() + "#" + txtAge.getText() + "#" + 
+					selectedStatus + "#" +   txtNationality.getText() + "#" +  selectedGender + "#" +  txtContact.getText() + "#" +  
+					txtEmail.getText() + "#" + txtDep.getText() + "#" +  txtJob.getText() + "\n";
+			
+			f.write(data);
+			f.close();
+			
+						
+
+		} catch (IOException x) { 
+		}
+		txtEmID.setText("");
+		txtName.setText("");
+		txtBirth.setText("");
+		txtAge.setText("");
+		txtNationality.setText("");
+		txtContact.setText("");
+		txtEmail.setText("");
+		txtDep.setText("");
+		txtJob.setText("");
+		
+	}
+	public static void read () {
+		model.setRowCount(0);
+		try (BufferedReader b = new BufferedReader (new FileReader ("employees.txt"))) {
+			String line;
+    		while ((line = b.readLine())!=null) {
+    			String row[] = line.split("#");
+    			model.addRow(row);
+    		}
+				
+		} catch (IOException ex) {
+			
+		}
+		
+	}
+	
+	public static void main (String[] args) {
+		
+		new EmployeeManagementSystemGUI ();
+	}
+
+}
