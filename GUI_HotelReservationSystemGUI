@@ -1,0 +1,229 @@
+package labActs;
+import java.awt.Color;
+import java.awt.event.*;
+import java.io.*;
+import java.util.ArrayList;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+public class HotelReservationSystemGUI extends JFrame {
+	static JLabel lblname, lblroomtype, lblcheckIn, lblcheckOut;
+	static JTextField txtname, txtroomtype, txtcheckIn, txtcheckOut;
+	static JButton btnadd, btnup, btndel, btnexit;
+	static DefaultTableModel model;
+	static JTable table;
+	
+	HotelReservationSystemGUI () {
+		setLayout(null);
+		setSize(900,700);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setTitle("Hotel Reservation System");
+		getContentPane().setBackground(new Color(196, 164, 132));
+		
+		//1st column
+		lblname = new JLabel ("Guess Name");
+		add(lblname).setBounds(20, 450, 100, 30);
+		txtname = new JTextField ();
+		add(txtname).setBounds(20, 475, 150, 20);
+		
+		//2nd column
+		lblroomtype = new JLabel ("Room Type");
+		add(lblroomtype).setBounds(190, 450, 100, 30);
+		txtroomtype = new JTextField ();
+		add(txtroomtype).setBounds(190, 475, 150, 20);
+		
+		//3rd column
+		lblcheckIn = new JLabel ("Check in Date");
+		add(lblcheckIn).setBounds(360, 450, 100, 30);
+		txtcheckIn = new JTextField ();
+		add(txtcheckIn).setBounds(360, 475, 150, 20);
+		
+		//4th column
+		lblcheckOut = new JLabel ("Check out Date");
+		add(lblcheckOut).setBounds(530, 450, 100, 30);
+		txtcheckOut = new JTextField ();
+		add(txtcheckOut).setBounds(530, 475, 150, 20);
+		
+		//buttons
+		btnadd = new JButton ("Add");
+		add(btnadd).setBounds(735, 470, 100, 25);
+
+		btnup = new JButton ("Update");
+		add(btnup).setBounds(735, 510, 100, 25);
+
+		btndel = new JButton ("Delete");
+		add(btndel).setBounds(735, 550, 100, 25);
+
+		btnexit = new JButton ("Exit");
+		add(btnexit).setBounds(735, 590, 100, 25);
+		
+		//table
+		String [] columns = {"Guess Name", "Room Type", "Check in Date", "Check out Date"}; 	
+		model = new DefaultTableModel(columns,0);
+		table = new JTable (model);
+        JScrollPane sp = new JScrollPane(table);
+        add(sp).setBounds(20, 30, 845, 420);
+        
+        read();
+ 
+        //code to click a row and return its texts in the textfields
+        table.addMouseListener(new MouseAdapter() {
+        	public void mouseClicked (MouseEvent e) {
+        		int row = table.getSelectedRow();
+        		if (row != -1) {
+        			txtname.setText(model.getValueAt(row, 0).toString());
+        			txtroomtype.setText(model.getValueAt(row, 1).toString());
+        			txtcheckIn.setText(model.getValueAt(row, 2).toString());
+        			txtcheckOut.setText(model.getValueAt(row, 3).toString());
+
+        		}
+        	}
+        });
+        
+        //action to be executed if ADD is click;
+        btnadd.addActionListener(e->{
+			add();
+			read();
+			clear();
+		});
+        
+        
+        //action to be executed if UPDATE is click
+        btnup.addActionListener(e-> {
+			int selectedRow = table.getSelectedRow();
+			if (selectedRow == -1) {
+				JOptionPane.showMessageDialog(null, "Please select a record to update");
+				return;
+			}
+			
+			ArrayList<String> lines = new ArrayList<>();
+			try (BufferedReader br = new BufferedReader (new FileReader("reservation.txt"))) {
+				String line;
+				int indexRow = 0;
+				
+				while ((line = br.readLine()) != null) {
+					if (indexRow == selectedRow) {
+						
+						String updated =  txtname.getText() + "#" + txtroomtype.getText() + "#" + txtcheckIn.getText() + "#" + txtcheckOut.getText() ;
+
+						lines.add(updated);
+					} else {
+						lines.add(line);
+					}indexRow++;
+				} 
+				
+			} catch (IOException z) {
+				System.err.println(z);
+			}
+			
+			try (BufferedWriter bw = new BufferedWriter (new FileWriter ("reservation.txt"))) {
+				for (String record : lines ) bw.write(record + "\n");				
+	
+			} catch (IOException z) {
+				System.err.println(z);
+
+			}
+			JOptionPane.showMessageDialog(null,  "Record Updated Successfully!");
+			read();
+			clear();
+			
+		});
+        
+        
+        //action to be executed if DELETE is click
+        btndel.addActionListener(e-> {
+			int selectedRow = table.getSelectedRow();
+			if (selectedRow == -1) {
+				JOptionPane.showMessageDialog(null,  "Please select a record to delete.");
+				return;
+			}
+				
+			int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+			if (confirm != JOptionPane.YES_OPTION) return;
+			
+			ArrayList<String> lines = new ArrayList<>();
+			try (BufferedReader br =  new BufferedReader (new FileReader("reservation.txt"))){
+				String line; 
+				int rowIndex = 0;
+				
+				while ((line = br.readLine()) != null) {
+					if (rowIndex != selectedRow) lines.add(line);
+					rowIndex++;
+					
+				}
+				
+				
+			}catch (IOException z) {
+				System.err.println(z);
+				
+			}
+			
+			try (BufferedWriter bw = new BufferedWriter (new FileWriter ("reservation.txt"))) {
+				
+				for (String record : lines ) bw.write(record + "\n");				
+	
+			} catch (IOException z) {
+				System.err.println(z);
+			}
+			JOptionPane.showMessageDialog(null,  "Record Delected Successfully!");
+			read();
+			clear();
+		});		
+		
+        
+        //action to be executed if EXIT is click
+        btnexit.addActionListener(e->{
+        	int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?", "Exit Confirmation", JOptionPane.YES_NO_OPTION);
+        	if (confirm ==  JOptionPane.YES_OPTION)
+        	System.exit(0);
+        });
+		
+		
+        
+		setVisible(true);
+	
+		
+	} public static void add() {
+		try (FileWriter f = new FileWriter ("reservation.txt", true)) {
+		
+			String record = txtname.getText() + "#" + txtroomtype.getText() + "#" + txtcheckIn.getText() + "#" + txtcheckOut.getText() + "\n";
+			f.write(record);		
+			JOptionPane.showMessageDialog(null, "Successfully Added");
+			
+
+		}catch (IOException e) {
+			
+		}
+	}
+	
+	public static void read () {
+		model.setRowCount(0);
+		try (BufferedReader b = new BufferedReader (new FileReader ("reservation.txt"))) {
+			String line;
+    		while ((line = b.readLine())!=null) {
+    			String row[] = line.split("#");
+    			model.addRow(row);
+    		}
+				
+		} catch (IOException ex) {
+			
+		}
+		
+	}
+	
+	public static void clear() {
+		txtname.setText("");
+		txtroomtype.setText("");
+		txtcheckIn.setText("");
+		txtcheckOut.setText("");
+		
+		
+	}
+	
+	
+	
+	public static void main (String[] args) {
+		new HotelReservationSystemGUI();
+	}
+
+}
